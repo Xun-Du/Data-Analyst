@@ -1,0 +1,142 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "width": 1200,
+  "height": 600,
+  "title": {
+    "text": "Spatial Distribution of Earthquakes",
+    "fontSize": 24,
+    "font": "Times New Roman",
+    "fontWeight": "bold"
+  },
+  "projection": {
+        "type": "mercator", 
+        "center": [100, 20],
+        "scale": {"expr": "zoomSlider"}
+  },
+  "params":[
+    {
+      "name": "showAll",
+      "value": true,
+      "bind": {
+        "input": "checkbox",
+        "name": "Show all months"
+      }
+    },
+    {
+        "name": "monthSlider",
+        "value": 1,
+        "bind": {
+            "input": "range",
+            "min": 1,
+            "max": 12,
+            "step": 1,
+            "name": "Month: "
+        }
+    },
+    {
+        "name": "zoomSlider",
+        "value": 390,
+        "bind": {
+            "input": "range",
+            "min": 200,
+            "max": 800,
+            "step": 10,
+            "name": "Zoom: "
+        }
+    }
+  ],
+  "layer": [
+    {
+      "data": {
+        "url": "js/asia.topojson",
+        "format": {"type": "topojson", "feature": "ne_50m_admin_0_countries"}
+      },
+      "mark": {
+        "type": "geoshape", 
+        "fill": "lightgrey", 
+        "stroke": "white"
+      }
+    },
+    {
+      "data": {
+        "url": "js/asia_boundaries.topojson",
+        "format": {"type": "topojson", "feature": "PB2002_boundaries"}
+      },
+      "mark": {
+        "type": "geoshape",
+        "filled": false,
+        "stroke": "#ff5733",
+        "strokeWidth": 2.5,
+        "opacity": 0.5
+      }
+    },
+    {
+      "data": {
+          "url": "data/2024EQ_cleaned.csv",
+          "format": {
+            "type": "csv",
+            "parse": {
+              "latitude": "number",
+              "longitude": "number",
+              "depth": "number",
+              "mag": "number",
+              "time": "date"
+            }
+          }
+      },
+      "transform": [
+          { "calculate": "month(toDate(datum.time)) + 1", "as": "monthNum" },
+          { "filter": "showAll || datum.monthNum === monthSlider" }
+      ],
+      "mark": {"type": "circle"},
+      "encoding": {
+        "longitude": {"field": "longitude", "type": "quantitative"},
+        "latitude": {"field": "latitude", "type": "quantitative"},
+        "size": {
+            "field": "mag", 
+            "type": "quantitative", 
+            "scale": {"domain": [5, 7.5], "range": [200, 1500]},
+            "title": "Magnitude"
+        },
+        "color": {
+            "field": "depth", 
+            "type": "quantitative", 
+            "scale": {"scheme": "bluepurple"},
+            "title": "Depth (km)"
+        },
+        "tooltip": [
+            {"field":"time","type":"temporal","title":"Time"},
+            {"field":"mag","type":"quantitative","title":"Magnitude"},
+            {"field":"depth","type":"quantitative","title":"Depth (km)"},
+            {"field":"latitude","type":"quantitative"},
+            {"field":"longitude","type":"quantitative"}
+        ]
+      }
+    },
+    {
+      "data": {
+        "values": [
+          {"lon": 140, "lat": 38, "label": "Japan Trench"},
+          {"lon": 125, "lat": 12, "label": "Philippine Trench"},
+          {"lon": 100, "lat": -8, "label": "Sunda Trench"},
+          {"lon": 155, "lat": -5, "label": "Pacific Ring of Fire"}
+        ]
+      },
+      "mark": {
+        "type": "text",
+        "font": "Times New Roman",
+        "fontSize": 14,
+        "fontWeight": "bold",
+        "fill": "#d73027",
+        "align": "center",
+        "baseline": "middle"
+      },
+      "encoding": {
+        "longitude": {"field": "lon", "type": "quantitative"},
+        "latitude": {"field": "lat", "type": "quantitative"},
+        "text": {"field": "label"}
+      }
+    }
+  ]
+}
+

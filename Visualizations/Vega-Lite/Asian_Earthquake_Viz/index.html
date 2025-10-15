@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Import Vega & Vega-Lite (does not have to be from CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/vega@5.20.2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.1.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.17.0"></script>
+  
+  
+  <!-- CSS file -->
+  <link rel="stylesheet" type="text/css" href="css/styles.css" media="all">
+  
+</head>
+<body>
+    <div class="container">
+        <h1>Seismic Patterns Across Asia: Magnitude, Depth and Impact</h1>
+
+        <div id="map" class="chart large"></div>
+
+        <div class="insight-box">
+            <h2>Regional Analysis</h2>
+            <p>
+                Earthquakes are mainly concentrated along tectonic plate boundaries, such as the Pacific Ring of Fire and the Himalayan region.
+            </p>
+            <p>
+                Deeper and stronger earthquakes occur mostly near subduction zones like Japan and Indonesia, while inland areas experience shallower, moderate ones.
+            </p>
+        </div>
+
+        <div class="row3">
+            <div id="scatter_plot" class="chart"></div>
+            <div id="histogram" class="chart"></div>
+            <div class="insight-text">
+                <h2>Magnitude-Depth Insights</h2>
+                <p>
+                    Most earthquakes occur at shallow depths (0–100 km) regardless of magnitude, showing no strong correlation between depth and magnitude.
+                </p>
+                <p>
+                    The magnitude frequency distribution reveals that most earthquakes are shallow and of lower magnitude, with high-magnitude events being much rarer.
+                </p>
+            </div>
+        </div>
+
+        <div class="bottom-layout">
+            <div class="left-column">
+                <div class="insight">
+                    <h2>Impact Insights</h2>
+                    <p>Countries like China, Pakistan, Iran experience the highest deaths due to dense population and subduction zones.</p>
+                    <p>Improved infrastructure and early warning systems have reduced deaths rate in recent decades.</p>
+                </div>
+
+                <div id="bar_chart" class="chart small"></div>
+            </div>
+
+            <div id="heatmap" class="chart large"></div>
+        </div>
+
+    </div>
+
+    <footer class="site-footer">
+        <hr class="footer-sep" />
+
+        <div>
+            <div>Visualization by <strong>Xun Du</strong></div>
+            <div>
+                Data Source:
+                <a href="https://earthquake.usgs.gov/earthquakes/search/" target="_blank" rel="noopener noreferrer">USGS</a>,
+                <a href="https://public.emdat.be/" target="_blank" rel="noopener noreferrer">Public EM-DAT</a>
+            </div>
+            <div>Last updated: Oct 15, 2025</div>
+        </div>
+    </footer>
+    
+
+
+    <script type="text/javascript">
+        var spec1 = "js/map.vg.json";
+        vegaEmbed('#map', spec1).then(function(result) {}).catch(console.error);
+
+        var spec2 = "js/scatter_plot.vg.json";
+        vegaEmbed('#scatter_plot', spec2).then(function(result) {}).catch(console.error);
+
+        var spec3 = "js/histogram.vg.json";
+        vegaEmbed('#histogram', spec3).then(function(result) {}).catch(console.error);
+
+        var spec4 = "js/bar_chart.vg.json";
+        vegaEmbed('#bar_chart', spec4).then(function(result) {}).catch(console.error);
+
+        var spec5 = "js/heatmap.vg.json";
+        vegaEmbed('#heatmap', spec5).then(function(result) {}).catch(console.error);
+    </script>
+</body>
+</html>

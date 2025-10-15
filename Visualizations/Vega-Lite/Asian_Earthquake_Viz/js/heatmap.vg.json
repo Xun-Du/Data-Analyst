@@ -1,0 +1,90 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "width": 500,
+  "height": 450,
+  "title": {
+    "text": "Earthquake Occurance and Impact",
+    "fontSize": 24,
+    "font": "Times New Roman",
+    "fontWeight": "bold",
+    "subtitle": "Switch between Total Deaths and Number of Events",
+    "subtitleFont": "Times New Roman",
+    "subtitleFontSize": 15,
+    "subtitleFontWeight": "normal"
+  },
+  "data": {
+    "url": "data/EqDeath_cleaned.csv",
+    "format": {
+      "type": "csv",
+      "parse": {
+        "Total Deaths": "number",
+        "Start Year": "number",
+        "Start Month": "number"
+      }
+    }
+  },
+  "params": [
+    {
+      "name": "metric",
+      "value": "DeathsSum",
+      "bind": {
+        "input": "select",
+        "options": ["DeathsSum", "EventCount"],
+        "labels": ["Total Deaths", "Event Count"],
+        "name": "Display Metric: "
+      }
+    }
+  ],
+  "transform": [
+    {
+      "aggregate": [
+        { "op": "sum", "field": "Total Deaths", "as": "DeathsSum" },
+        { "op": "count", "field": "DisNo.", "as": "EventCount" }
+      ],
+      "groupby": ["Start Year", "Start Month"]
+    },
+    {
+      "calculate": "metric === 'DeathsSum' ? datum.DeathsSum : datum.EventCount",
+      "as": "MetricValue"
+    }
+  ],
+  "mark": {
+    "type": "rect",
+    "stroke": "white",
+    "strokeWidth": 0.5
+  },
+  "encoding": {
+    "x": {
+      "field": "Start Month",
+      "type": "ordinal",
+      "title": "Month",
+      "axis": {"labelAngle": 0, "grid": false}
+    },
+    "y": {
+      "field": "Start Year",
+      "type": "ordinal",
+      "title": "Year",
+      "sort": "descending",
+      "axis": {"grid": false}
+    },
+    "color": {
+        "field": "MetricValue",
+        "type": "quantitative",
+        "title": "Selected Metric",               
+        "scale": {"scheme": "greens"}
+    },
+    "tooltip": [
+      {"field": "Start Year", "type": "ordinal", "title": "Year"},
+      {"field": "Start Month", "type": "ordinal", "title": "Month"},
+      {"field": "DeathsSum", "type": "quantitative", "title": "Total Deaths"},
+      {"field": "EventCount", "type": "quantitative", "title": "Event Count"}
+    ]
+  },
+  "config": {
+    "axis": {
+      "labelFontSize": 12,
+      "titleFontSize": 13
+    },
+    "view": {"stroke": "transparent"}
+  }
+}

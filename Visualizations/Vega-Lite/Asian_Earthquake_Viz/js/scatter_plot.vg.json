@@ -1,0 +1,46 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "width": 400,
+  "height": 350,
+  "title": {
+    "text": "Magnitude Vs Depth Correlation",
+    "fontSize": 24,
+    "font": "Times New Roman",
+    "fontWeight": "bold"
+  },
+  "data": {
+    "url": "data/2024EQ_cleaned.csv",
+    "format": {
+        "type": "csv",
+        "parse": {
+            "mag": "number",
+            "depth": "number",
+            "time": "date"
+        }
+    }
+  },
+  "mark": {
+    "type": "point",
+    "filled": true,
+    "opacity": 0.4
+  },
+  "encoding": {
+    "x": {
+      "field": "mag",
+      "type": "quantitative",
+      "title": "Magnitude",
+      "scale": {"domain": [4.9, 7.7]}
+    },
+    "y": {
+      "field": "depth",
+      "type": "quantitative",
+      "title": "Depth (km)",
+      "scale": {"reverse": true}
+    },
+    "tooltip": [
+      {"field": "time", "type": "temporal", "title": "Time"},
+      {"field": "mag", "type": "quantitative", "title": "Magnitude"},
+      {"field": "depth", "type": "quantitative", "title": "Depth (km)"}
+    ]
+  }
+}

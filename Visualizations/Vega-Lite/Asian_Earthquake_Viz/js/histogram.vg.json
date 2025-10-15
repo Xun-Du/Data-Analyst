@@ -1,0 +1,64 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "width": 400,
+  "height": 350,
+  "title": {
+    "text": "Magnitude Frequency Distribution",
+    "fontSize": 24,
+    "font": "Times New Roman",
+    "fontWeight": "bold"
+  },
+  "data": {
+    "url": "data/2024EQ_cleaned.csv",
+    "format": {
+      "type": "csv",
+      "parse": {"mag": "number"}
+    }
+  },
+  "transform": [
+    {
+      "bin": {
+        "binned": true,
+        "step": 0.5,
+        "extent": [5.0, 7.5]
+      },
+      "field": "mag",
+      "as": ["mag_bin_start", "mag_bin_end"]
+    },
+    {
+      "aggregate": [{"op": "count", "as": "count"}],
+      "groupby": ["mag_bin_start", "mag_bin_end"]
+    }
+  ],
+  "mark": {
+    "type": "bar",
+    "tooltip": true,
+    "cornerRadiusTopLeft": 3,
+    "cornerRadiusTopRight": 3
+  },
+  "encoding": {
+    "x": {
+      "field": "mag_bin_start",
+      "type": "quantitative",
+      "title": "Magnitude",
+      "scale": {"domain": [4.9, 7.6]},
+      "axis": {"tickMinStep": 0.5}
+    },
+    "x2": {"field": "mag_bin_end"},
+    "y": {
+      "field": "count",
+      "type": "quantitative",
+      "title": "Frequency"
+    },
+    "color": {
+      "field": "count",
+      "type": "quantitative",
+      "title": "Frequency",
+      "scale": {"scheme": "orangered"}
+    }
+  },
+  "config": {
+    "axis": {"labelFontSize": 12, "titleFontSize": 13},
+    "view": {"stroke": "transparent"}
+  }
+}

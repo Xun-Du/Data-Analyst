@@ -1,0 +1,88 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "width": 400,
+  "height": 267,
+  "title": {
+    "text": "Earthquake Death by Country",
+    "fontSize": 24,
+    "font": "Times New Roman",
+    "fontWeight": "bold"
+  },
+  "data": {
+    "url": "data/EqDeath_cleaned.csv",
+    "format": {
+      "type": "csv",
+      "parse": { "Total Deaths": "number" }
+    }
+  },
+  "params": [
+    {
+      "name": "topN",
+      "value": 5,
+      "bind": {
+        "input": "range",
+        "min": 3,
+        "max": 10,
+        "step": 1,
+        "name": "Show top N countries: "
+      }
+    },
+    {"name": "highlight", "select": {"type": "point", "on": "mouseover"}}
+  ],
+  "transform": [
+    { "filter": "isValid(datum['Total Deaths']) && datum['Total Deaths'] > 0" },
+    {
+      "aggregate": [
+        { "op": "sum", "field": "Total Deaths", "as": "DeathsSum" }
+      ],
+      "groupby": ["Country"]
+    },
+    {
+      "window": [
+        { "op": "rank", "as": "rank" }
+      ],
+      "sort": [{ "field": "DeathsSum", "order": "descending" }]
+    },
+    { "filter": "datum.rank <= topN" }
+  ],
+  "mark": {
+    "type": "bar",
+    "cornerRadiusEnd": 4,
+    "tooltip": true
+  },
+  "encoding": {
+    "y": {
+      "field": "Country",
+      "type": "nominal",
+      "title": null,
+      "sort": "-x"
+    },
+    "x": {
+      "field": "DeathsSum",
+      "type": "quantitative",
+      "title": "Total Death",
+      "axis": {"grid": false} 
+    },
+    "color": {
+      "field": "Country",
+      "type": "nominal",
+      "title": "Countries",
+      "scale": {
+        "scheme": "category20"
+      }
+    },
+    "opacity": {
+        "condition": {"param": "highlight", "value": 1},
+        "value": 0.2
+    },
+    "tooltip": [
+      { "field": "Country", "type": "nominal", "title": "Country" },
+      { "field": "DeathsSum", "type": "quantitative", "title": "Total Death" }
+    ]
+  },
+  "config": {
+    "axis": { "labelFontSize": 12, "titleFontSize": 13 },
+    "legend": { "labelFontSize": 12, "titleFontSize": 13 },
+    "view": { "stroke": "transparent" }
+  }
+}
